@@ -21,7 +21,7 @@ public class Testteleop extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 Intake intake = new Intake(hardwareMap,gamepad2);
-Launch launch = new Launch(hardwareMap,gamepad2);
+Launch launch = new Launch(hardwareMap,gamepad2, telemetry);
 ArtifactDetector artifactDetector = new ArtifactDetector(hardwareMap,gamepad2,telemetry);
 Hopper hopper = new Hopper(hardwareMap,gamepad2);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
