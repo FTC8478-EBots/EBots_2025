@@ -13,10 +13,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 @Config
 public class Launch {
-   public static int LAUNCH_VELOCITY = 51200;
+   public static int LAUNCH_VELOCITY = 30000;
     DcMotorEx launchMotor;
     Gamepad gamepad;
-  Telemetry telemetry;
+    Telemetry telemetry;
 
     Launch(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry) {
         launchMotor = hardwareMap.get(DcMotorEx.class, "launch");

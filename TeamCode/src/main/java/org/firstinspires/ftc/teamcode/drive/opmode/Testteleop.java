@@ -23,31 +23,33 @@ public class Testteleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         MecanumDrive drive = new MecanumDrive(hardwareMap, null);
-Intake intake = new Intake(hardwareMap,gamepad2);
-Launch launch = new Launch(hardwareMap,gamepad2, telemetry);
-ArtifactDetector artifactDetector = new ArtifactDetector(hardwareMap,gamepad2,telemetry);
-Hopper hopper = new Hopper(hardwareMap,gamepad2);
+        Intake intake = new Intake(hardwareMap, gamepad2);
+        Launch launch = new Launch(hardwareMap, gamepad2, telemetry);
+        ArtifactDetector artifactDetector = new ArtifactDetector(hardwareMap, gamepad2, telemetry);
+        Hopper hopper = new Hopper(hardwareMap, gamepad2);
+        Push push = new Push(hardwareMap, gamepad2);
 
         waitForStart();
 
         while (!isStopRequested()) {
             drive.setDrivePowers(
-                    new PoseVelocity2d( new Vector2d(
-                                    -gamepad1.left_stick_y,
-                                    -gamepad1.left_stick_x),
-                                    -gamepad1.right_stick_x
-                                   ));
-intake.processGamepad();
-launch.processGamepad();
-artifactDetector.recognizeColor();
-hopper.processGamepad();
+                    new PoseVelocity2d(new Vector2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x),
+                            -gamepad1.right_stick_x
+                    ));
+            intake.processGamepad();
+            launch.processGamepad();
+            //artifactDetector.recognizeColor();
+            hopper.processGamepad();
+            push.processGamepad();
             //drive.update();
 
-            Pose2d poseEstimate = drive.localizer.getPose();
-            telemetry.addData("x", poseEstimate.position.x);
-            telemetry.addData("y", poseEstimate.position.y);
-            telemetry.addData("heading", poseEstimate.heading);
-            telemetry.update();
+            //Pose2d poseEstimate = drive.localizer.getPose();
+            //telemetry.addData("x", poseEstimate.position.x);
+            //telemetry.addData("y", poseEstimate.position.y);
+            //telemetry.addData("heading", poseEstimate.heading);
+            //telemetry.update();
         }
     }
 }
