@@ -54,10 +54,10 @@ public class auton102825 extends LinearOpMode {
     }
     private boolean determineAreWeRed() {
         boolean currentlyRed = false;
-        while (!gamepad1.cross && !isStopRequested()) {
+        while (!gamepad1.circle && !isStopRequested()) {
             telemetry.addLine("if Blue click right bumper");
             telemetry.addLine("if Red click left bumper");
-            telemetry.addLine("click X to confirm");
+            telemetry.addLine("click O to confirm");
 
             if (currentlyRed == true)
                 telemetry.addLine("currently set Red.");
@@ -87,7 +87,7 @@ public class auton102825 extends LinearOpMode {
         // instantiate your MecanumDrive at a particular pose.
         Pose2d initialPose = (new Pose2d(-50, -50, Math.toRadians(45)));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
-        Launch launch = new Launch(hardwareMap, null);
+        Launch launch = new Launch(hardwareMap, null,telemetry);
 
 
 
@@ -115,47 +115,39 @@ public class auton102825 extends LinearOpMode {
         TrajectoryActionBuilder blueTrajectory = drive.actionBuilder(new Pose2d(new Vector2d(-29, -29),Math.toRadians(-45)))
                 .turn(Math.toRadians(90))
                 //launch 3 balls
-                .stopAndAdd(new SequentialAction(launch.autoLaunch()))
-                .waitSeconds(1)
-                .stopAndAdd(new SequentialAction(launch.stopLaunch()))
+                .stopAndAdd(new SequentialAction(launch.launchAction()))
                 .strafeTo(new Vector2d(-11, -11) )
                 .turn(Math.toRadians(-135))
                 .strafeTo(new Vector2d(-11,-51))
                 .strafeTo(new Vector2d(-29,-29))
                 .turn(Math.toRadians(135))
                 //launch 3 balls
-                .stopAndAdd(new SequentialAction(launch.autoLaunch()))
-                .waitSeconds(1)
-                .stopAndAdd(new SequentialAction(launch.stopLaunch()))
+                .stopAndAdd(new SequentialAction(launch.launchAction()))
                 ;
         TrajectoryActionBuilder redTrajectory = drive.actionBuilder(new Pose2d(new Vector2d(-29, 29),Math.toRadians(45)))
                 .turn(Math.toRadians(-90))
                 //launch 3 balls
-                .stopAndAdd(new SequentialAction(launch.autoLaunch()))
-                .waitSeconds(1)
-                .stopAndAdd(new SequentialAction(launch.stopLaunch()))
+                .stopAndAdd(new SequentialAction(launch.launchAction()))
                 .strafeTo(new Vector2d(-11, 11) )
                 .turn(Math.toRadians(135))
                 .strafeTo(new Vector2d(-11,51))
                 .strafeTo(new Vector2d(-29,29))
                 .turn(Math.toRadians(-135))
                 //launch 3 balls
-                .stopAndAdd(new SequentialAction(launch.autoLaunch()))
-                .waitSeconds(1)
-                .stopAndAdd(new SequentialAction(launch.stopLaunch()))
+                .stopAndAdd(new SequentialAction(launch.launchAction()))
                 ;
 
 //INIT STEP
         //launch.activateLaunch();
-        while (!isStopRequested() && !opModeIsActive()) {
-            int position = visionOutputPosition;
-            telemetry.addData("Position during Init", position);
-            telemetry.update();
-        }
+        //while (!isStopRequested() && !opModeIsActive()) {
+        //     int position = visionOutputPosition;
+        //     telemetry.addData("Position during Init", position);
+        //     telemetry.update();
+        // }
         int startPosition = visionOutputPosition;
         telemetry.addData("Starting Position", startPosition);
         telemetry.update();
-        //?
+        //
         AprilTagProcessor myAprilTagProcessor;
     myAprilTagProcessor =  new AprilTagProcessor.Builder().build();
         VisionPortal myVisionPortal;

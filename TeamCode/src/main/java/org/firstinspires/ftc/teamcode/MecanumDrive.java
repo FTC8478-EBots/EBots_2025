@@ -58,9 +58,9 @@ public final class MecanumDrive {
         // TODO: fill in these values based on
         //   see https://ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html?highlight=imu#physical-hub-mounting
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
-                RevHubOrientationOnRobot.LogoFacingDirection.UP;
+                RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+                RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
         // drive model parameters
         public double inPerTick = 0.0218519530183010;
@@ -68,8 +68,8 @@ public final class MecanumDrive {
         public double trackWidthTicks = 0.004136317632058162;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.0750103140944205;
-        public double kV = 0.004136317632058162;
+        public double kS = 1.2338250853153223;
+        public double kV = 0.004122008574591003;
         public double kA = 0.0004;
 
         // path profile parameters (in inches)
