@@ -17,10 +17,13 @@ public class Intake {
 
     void processGamepad() {
         if (gamepad.circle) {
-            intakeMotor.setPower(0.5);
+            intakeMotor.setPower(0.75);
         }
         if (gamepad.cross) {
-            intakeMotor.setPower(-0.5);
+            intakeMotor.setPower(-0.75);
+        }
+        else {
+            intakeMotor.setPower(0);
         }
 
     }

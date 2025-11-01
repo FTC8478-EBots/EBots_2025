@@ -1,75 +1,41 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+@Config
 public class Launch {
-    public DcMotorEx launchMotor;
+   public static int LAUNCH_VELOCITY = 30000;
+    DcMotorEx launchMotor;
     Gamepad gamepad;
+    Telemetry telemetry;
 
-    public Launch(HardwareMap hardwareMap, Gamepad gamepad) {
-        this.launchMotor = hardwareMap.get(DcMotorEx.class, "launch");
+    Launch(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry) {
+        launchMotor = hardwareMap.get(DcMotorEx.class, "launch");
         this.gamepad = gamepad;
+        launchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        launchMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        this.telemetry = telemetry;
 
     }
-    public class AutoLaunch implements Action {
-        private boolean initialized = false;
 
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            if (!initialized) {
-                launchMotor.setPower(0.8);
-                initialized = true;
-            }
-
-            double vel = launchMotor.getVelocity();
-            packet.put("launchVelocity", vel);
-            return vel < 10_000.0;
-        }
-    }
-
-    public Action autoLaunch() {
-        return new  AutoLaunch();
-    }
-    public class StopLaunch implements Action {
-        private boolean initialized = false;
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            if (!initialized) {
-                launchMotor.setPower(0);
-                initialized = true;
-            }
-
-            double vel = launchMotor.getVelocity();
-            packet.put("launchVelocity", vel);
-            return vel < 10_000.0;
-        }
-    }
-
-    public Action stopLaunch() {
-        return new  StopLaunch();
-    }
-    public void activateLaunch() {
-        launchMotor.setPower(0.5);
-    }
-    void deactivateLaunch() {
-        launchMotor.setPower(0);
-    }
     void processGamepad() {
         if (gamepad.square) {
-            launchMotor.setPower(0.5);
-        }else if (gamepad.triangle){
-            launchMotor.setPower(-0.5);
-        }else {
-            launchMotor.setPower(0);
+            launchMotor.setVelocity(0);
+        }else if (gamepad.triangle) {
+            launchMotor.setVelocity(LAUNCH_VELOCITY);
         }
+        telemetry.addData("LAUNCH_VELOCITY:", launchMotor.getVelocity());
+
     }
 
 }

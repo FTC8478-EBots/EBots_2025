@@ -1,13 +1,15 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -20,30 +22,34 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 public class Testteleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        MecanumDrive drive = new MecanumDrive(hardwareMap,null);
-Intake intake = new Intake(hardwareMap,gamepad2);
-Launch launch = new Launch(hardwareMap,gamepad2);
-
+        MecanumDrive drive = new MecanumDrive(hardwareMap, null);
+        Intake intake = new Intake(hardwareMap, gamepad2);
+        Launch launch = new Launch(hardwareMap, gamepad2, telemetry);
+        ArtifactDetector artifactDetector = new ArtifactDetector(hardwareMap, gamepad2, telemetry);
+        Hopper hopper = new Hopper(hardwareMap, gamepad2);
+        Push push = new Push(hardwareMap, gamepad2);
 
         waitForStart();
 
         while (!isStopRequested()) {
             drive.setDrivePowers(
-            new PoseVelocity2d( new Vector2d(
-                    -gamepad1.left_stick_y,
-                    -gamepad1.left_stick_x),
-                    -gamepad1.right_stick_x
-            )
-            );
-intake.processGamepad();
-launch.processGamepad();
-            Pose2d poseEstimate =             drive.localizer.getPose();
+                    new PoseVelocity2d(new Vector2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x),
+                            -gamepad1.right_stick_x
+                    ));
+            intake.processGamepad();
+            launch.processGamepad();
+            //artifactDetector.recognizeColor();
+            hopper.processGamepad();
+            push.processGamepad();
+            //drive.update();
 
-
-            telemetry.addData("x", poseEstimate.position.x);
-            telemetry.addData("y", poseEstimate.position.y);
-            telemetry.addData("heading", poseEstimate.heading);
-            telemetry.update();
+            //Pose2d poseEstimate = drive.localizer.getPose();
+            //telemetry.addData("x", poseEstimate.position.x);
+            //telemetry.addData("y", poseEstimate.position.y);
+            //telemetry.addData("heading", poseEstimate.heading);
+            //telemetry.update();
         }
     }
 }
