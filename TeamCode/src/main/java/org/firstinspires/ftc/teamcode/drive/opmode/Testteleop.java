@@ -26,8 +26,8 @@ public class Testteleop extends LinearOpMode {
         Intake intake = new Intake(hardwareMap, gamepad2);
         Launch launch = new Launch(hardwareMap, gamepad2, telemetry);
         ArtifactDetector artifactDetector = new ArtifactDetector(hardwareMap, gamepad2, telemetry);
-        Hopper hopper = new Hopper(hardwareMap, gamepad2);
-        Push push = new Push(hardwareMap, gamepad2);
+        Hopper hopper = new Hopper(hardwareMap, gamepad2, telemetry);
+        Push push = new Push(hardwareMap, gamepad2, hopper, launch);
 
         waitForStart();
 
@@ -49,7 +49,7 @@ public class Testteleop extends LinearOpMode {
             //telemetry.addData("x", poseEstimate.position.x);
             //telemetry.addData("y", poseEstimate.position.y);
             //telemetry.addData("heading", poseEstimate.heading);
-            //telemetry.update();
+            telemetry.update();
         }
     }
 }

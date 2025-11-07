@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 @Config
 public class Launch {
-   public static int LAUNCH_VELOCITY = 30000;
+   public static int LAUNCH_VELOCITY = -2300;
     DcMotorEx launchMotor;
     Gamepad gamepad;
     Telemetry telemetry;
@@ -30,12 +30,17 @@ public class Launch {
 
     void processGamepad() {
         if (gamepad.square) {
-            launchMotor.setVelocity(0);
+            launchMotor.setVelocity(-LAUNCH_VELOCITY*.5);
         }else if (gamepad.triangle) {
             launchMotor.setVelocity(LAUNCH_VELOCITY);
+        } else {
+            launchMotor.setVelocity(0);
         }
         telemetry.addData("LAUNCH_VELOCITY:", launchMotor.getVelocity());
+    }
 
+    boolean isFast() {
+        return (launchMotor.getVelocity()/LAUNCH_VELOCITY)>.8;
     }
 
 }
