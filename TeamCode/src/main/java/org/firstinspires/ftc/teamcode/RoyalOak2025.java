@@ -120,10 +120,11 @@ public class RoyalOak2025 extends LinearOpMode {
         TrajectoryActionBuilder blueTrajectory = drive.actionBuilder(new Pose2d(new Vector2d(-29, -29),Math.toRadians(-45)))
                 .turn(Math.toRadians(90))
                 //launch 3 balls
-                .stopAndAdd(new SequentialAction(launch.launchAction()new SleepAction(.5),push.getAction(),hopper.getAction(), new SleepAction(3)))
+                .stopAndAdd(new SequentialAction(launch.launchAction(),new SleepAction(.5),push.getLaunchSequence(),hopper.getAction(), new SleepAction(1)))
 
-                /*.strafeTo(new Vector2d(-11, -11) )
-                .turn(Math.toRadians(-135))
+
+                .strafeTo(new Vector2d(-11, -11) )
+                /*.turn(Math.toRadians(-135))
                 .strafeTo(new Vector2d(-11,-51))
                 .strafeTo(new Vector2d(-29,-29))
                 .turn(Math.toRadians(135))
@@ -133,9 +134,9 @@ public class RoyalOak2025 extends LinearOpMode {
         TrajectoryActionBuilder redTrajectory = drive.actionBuilder(new Pose2d(new Vector2d(-29, 29),Math.toRadians(45)))
                 .turn(Math.toRadians(-90))
                 //launch 3 balls
-                .stopAndAdd(new SequentialAction(launch.launchAction(),new SleepAction(.5),push.getAction(),hopper.getAction(),new SleepAction(3)))
-                /*.strafeTo(new Vector2d(-11, 11) )
-                .turn(Math.toRadians(135))
+                .stopAndAdd(new SequentialAction(launch.launchAction(),new SleepAction(.5),push.getLaunchSequence(),hopper.getAction(),new SleepAction(3)))
+                .strafeTo(new Vector2d(-11, 11) )
+                /*.turn(Math.toRadians(135))
                 .strafeTo(new Vector2d(-11,51))
                 .strafeTo(new Vector2d(-29,29))
                 .turn(Math.toRadians(-135))

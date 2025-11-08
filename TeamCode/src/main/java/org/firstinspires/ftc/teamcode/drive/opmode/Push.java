@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -39,20 +41,28 @@ public class Push {
         }
     }
 
+    public SequentialAction getLaunchSequence() {
+        return new SequentialAction(new PushAction(push), new SleepAction(.5),new PushAction(park));
+    }
+
     public class PushAction implements Action {
         private boolean initialized = false;
+        private double position = 0;
+        PushAction(double position) {
+            this.position = position;
+        }
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
                 hopper.setPusherOffset(PUSH_OFFSET);
-                pushServo.setPosition(push);
+                pushServo.setPosition(position);
 
             return false;
         }
     }
-    public Action getAction() {
+    /*public Action getAction() {
         return new PushAction();
-    }
+    }*/
 
 }
 

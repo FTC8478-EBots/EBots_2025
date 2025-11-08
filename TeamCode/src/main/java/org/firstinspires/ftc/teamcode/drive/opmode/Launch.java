@@ -58,7 +58,8 @@ public class Launch {
             }
             double vel = launchMotor.getVelocity();
             packet.put("launchVelocity",vel);
-            return vel>LAUNCH_VELOCITY*.8;
+            //return true when still slow
+            return vel<LAUNCH_VELOCITY*.8;
         }
     }
     public Action launchAction() {
