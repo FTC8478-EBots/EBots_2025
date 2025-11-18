@@ -30,16 +30,20 @@ public class Launch {
 
         this.telemetry = telemetry;
 
+        // TEST: Always have the motor on
+        launchMotor.setVelocity(LAUNCH_VELOCITY);
     }
 
     void processGamepad() {
+        /* Testing always on motor in initialization so this code does nothing right now
         if (gamepad.square) {
-            launchMotor.setVelocity(-LAUNCH_VELOCITY*.5);
+            launchMotor.setVelocity(-LAUNCH_VELOCITY);
         }else if (gamepad.triangle) {
             launchMotor.setVelocity(LAUNCH_VELOCITY);
         } else {
             launchMotor.setVelocity(0);
         }
+        */
         telemetry.addData("LAUNCH_VELOCITY:", launchMotor.getVelocity());
     }
 

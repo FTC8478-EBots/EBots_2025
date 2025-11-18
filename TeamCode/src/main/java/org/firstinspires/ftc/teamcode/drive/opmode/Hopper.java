@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class Hopper {
-    public static double HOPPER_OFFSET = 0.02;
+    public static double HOPPER_OFFSET = 0.04;
     double position = 1;
     double pusherOffset = 0;
     int pos = 15;
@@ -37,7 +37,7 @@ public class Hopper {
         if (gamepad.right_bumper) {
             // TODO: Set hopper to position 2 (so that ball 2 is at the top)
             if (! buttonWasPressed) {
-                pos = (pos + 1);
+                pos++;
                 if (pos>15) pos = 15;
 
                 buttonWasPressed = true;
@@ -46,7 +46,7 @@ public class Hopper {
             // TODO: Set hopped to position 3  (so that ball 3 is at the top)
             if (! buttonWasPressed) {
 
-                pos = (pos -1);
+                pos--;
                 if (pos<0) pos = 0;
                 buttonWasPressed = true;
 
@@ -73,12 +73,12 @@ public class Hopper {
 
 
 
-        void nextPosition() {
-        pos--;
-        updatePosition();
-        }
-
-        void updatePosition() {
-            hopperServo.setPosition(((double) pos) /15.0*10.0/9.0+ HOPPER_OFFSET + pusherOffset);
-        }
+    void nextPosition() {
+    pos--;
+    updatePosition();
     }
+
+    void updatePosition() {
+        hopperServo.setPosition(((double) pos) /15.0*10.0/9.0+ HOPPER_OFFSET + pusherOffset);
+    }
+}

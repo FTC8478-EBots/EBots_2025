@@ -23,10 +23,11 @@ public class Testteleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         MecanumDrive drive = new MecanumDrive(hardwareMap, null);
-        Intake intake = new Intake(hardwareMap, gamepad2);
+
         Launch launch = new Launch(hardwareMap, gamepad2, telemetry);
         ArtifactDetector artifactDetector = new ArtifactDetector(hardwareMap, gamepad2, telemetry);
         Hopper hopper = new Hopper(hardwareMap, gamepad2, telemetry);
+        Intake intake = new Intake(hardwareMap, gamepad2, hopper);
         Push push = new Push(hardwareMap, gamepad2, hopper, launch);
 
         waitForStart();
