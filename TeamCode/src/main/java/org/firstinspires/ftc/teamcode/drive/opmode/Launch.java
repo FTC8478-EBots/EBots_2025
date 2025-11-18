@@ -17,7 +17,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 @Config
 public class Launch {
-   public static int LAUNCH_VELOCITY = 30000;
+    public static double LAUNCH_VELOCITY = -2300;
+    double targetVelocity;
     DcMotorEx launchMotor;
     Gamepad gamepad;
     Telemetry telemetry;
@@ -34,37 +35,43 @@ public class Launch {
 
     void processGamepad() {
         if (gamepad.square) {
-            launchMotor.setVelocity(0);
+            launchMotor.setVelocity(-LAUNCH_VELOCITY);
         }else if (gamepad.triangle) {
             launchMotor.setVelocity(LAUNCH_VELOCITY);
+        } else {
+            launchMotor.setVelocity(0);
         }
         telemetry.addData("LAUNCH_VELOCITY:", launchMotor.getVelocity());
-
     }
+
+    boolean isFast() {
+        return (launchMotor.getVelocity()/targetVelocity)>.8;
+    }
+
     public class LaunchAction implements Action {
         private boolean initialized = false;
+        public LaunchAction(double launchVelocity) {
+            targetVelocity = launchVelocity;
+        }
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-                launchMotor.setVelocity(6000);
-               // try {
-               //     this.wait(1);
-               // } catch (InterruptedException e) {
-                    //Ignore this exception.
-                    //throw new RuntimeException(e);
-                //}
-               // launchMotor.setVelocity(0);
+                launchMotor.setVelocity(targetVelocity);
                 initialized = true;
             }
-
             double vel = launchMotor.getVelocity();
-            packet.put("launchVelocity", vel);
-            return vel > 5000;
+            packet.put("launchVelocity",vel);
+            //return true when still slow
+            return !isFast();
         }
     }
-
     public Action launchAction() {
-        return new LaunchAction();
+        return new LaunchAction(LAUNCH_VELOCITY);
     }
+    
+    public Action stopAction() {
+        return new LaunchAction(0);
+    }
+
 }
