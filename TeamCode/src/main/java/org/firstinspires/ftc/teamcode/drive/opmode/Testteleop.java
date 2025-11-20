@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.AutoSteerCamera;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 
@@ -23,12 +24,12 @@ public class Testteleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         MecanumDrive drive = new MecanumDrive(hardwareMap, null);
-        Intake intake = new Intake(hardwareMap, gamepad2);
+        Intake intake = new Intake(hardwareMap, gamepad2,telemetry);
         Launch launch = new Launch(hardwareMap, gamepad2, telemetry);
         ArtifactDetector artifactDetector = new ArtifactDetector(hardwareMap, gamepad2, telemetry);
         Hopper hopper = new Hopper(hardwareMap, gamepad2, telemetry);
         Push push = new Push(hardwareMap, gamepad2, hopper, launch);
-
+        AutoSteerCamera autoSteerCamera = new AutoSteerCamera(hardwareMap,telemetry);
         waitForStart();
 
         while (!isStopRequested()) {
@@ -44,7 +45,7 @@ public class Testteleop extends LinearOpMode {
             hopper.processGamepad();
             push.processGamepad();
             //drive.update();
-
+            autoSteerCamera.updateResults();
             //Pose2d poseEstimate = drive.localizer.getPose();
             //telemetry.addData("x", poseEstimate.position.x);
             //telemetry.addData("y", poseEstimate.position.y);
