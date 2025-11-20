@@ -29,6 +29,7 @@ public class Testteleop extends LinearOpMode {
         Hopper hopper = new Hopper(hardwareMap, gamepad2, telemetry);
         Intake intake = new Intake(hardwareMap, gamepad2, hopper);
         Push push = new Push(hardwareMap, gamepad2, hopper, launch);
+//LightSensor lightSensor = new LightSensor(hardwareMap, gamepad2, telemetry);
 
         waitForStart();
 

@@ -17,11 +17,27 @@ public class Hopper {
     public static double HOPPER_OFFSET = 0.04;
     double position = 1;
     double pusherOffset = 0;
-    int pos = 15;
+    int pos = 0;
     Servo hopperServo;
     Gamepad gamepad;
     Telemetry telemetry;
     boolean buttonWasPressed = false;
+    double[] positionLookup = {
+            0,
+            0.07,
+            .14,
+            0.21,
+            0.28,
+            0.36,
+            .44,
+            .52,
+            .60,
+            0.675,
+            0.75,
+            .82,
+            0.89,
+            .96,
+    };
 
     public Hopper(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry) {
         this.gamepad = gamepad;
@@ -79,6 +95,7 @@ public class Hopper {
     }
 
     void updatePosition() {
-        hopperServo.setPosition(((double) pos) /15.0*10.0/9.0+ HOPPER_OFFSET + pusherOffset);
+        //hopperServo.setPosition(((double) pos) /15.0*10.0/9.0+ HOPPER_OFFSET + pusherOffset);
+        hopperServo.setPosition(positionLookup[pos]);
     }
 }
