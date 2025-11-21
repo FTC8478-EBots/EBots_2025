@@ -21,7 +21,7 @@ public class Push {
 
     public static double park = .7;
     public static double push = 1.0;
-    public static double PUSH_OFFSET = -.02;
+    public static double PUSH_OFFSET = -.01;
     public Push(HardwareMap hardwareMap, Gamepad gamepad, Hopper hopper, Launch launch) {
         this.gamepad = gamepad;
         this.hopper = hopper;

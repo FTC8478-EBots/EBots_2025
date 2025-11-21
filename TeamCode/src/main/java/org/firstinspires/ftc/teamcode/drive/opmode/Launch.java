@@ -21,6 +21,7 @@ public class Launch {
     DcMotorEx launchMotor;
     Gamepad gamepad;
     Telemetry telemetry;
+double targetVelocity;
 
     public Launch(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry) {
         launchMotor = hardwareMap.get(DcMotorEx.class, "launch");
@@ -31,11 +32,11 @@ public class Launch {
         this.telemetry = telemetry;
 
         // TEST: Always have the motor on
-        launchMotor.setVelocity(LAUNCH_VELOCITY);
+        //launchMotor.setVelocity(LAUNCH_VELOCITY);
     }
 
     void processGamepad() {
-        /* Testing always on motor in initialization so this code does nothing right now
+        //Testing always on motor in initialization so this code does nothing right now
         if (gamepad.square) {
             launchMotor.setVelocity(-LAUNCH_VELOCITY);
         }else if (gamepad.triangle) {
@@ -43,7 +44,7 @@ public class Launch {
         } else {
             launchMotor.setVelocity(0);
         }
-        */
+
         telemetry.addData("LAUNCH_VELOCITY:", launchMotor.getVelocity());
     }
 
@@ -53,20 +54,29 @@ public class Launch {
 
     public class LaunchAction implements Action {
         private boolean initialized = false;
+        public LaunchAction(double launchVelocity) {
+            targetVelocity = launchVelocity;
+        }
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-                launchMotor.setVelocity(LAUNCH_VELOCITY);
+                launchMotor.setVelocity(targetVelocity);
                 initialized = true;
             }
             double vel = launchMotor.getVelocity();
             packet.put("launchVelocity",vel);
             //return true when still slow
-            return vel<LAUNCH_VELOCITY*.8;
+            return !isFast();
         }
     }
     public Action launchAction() {
-        return new LaunchAction();
+        return new LaunchAction(LAUNCH_VELOCITY);
     }
+
+    public Action stopAction() {
+        return new LaunchAction(0);
+    }
+
+
 }

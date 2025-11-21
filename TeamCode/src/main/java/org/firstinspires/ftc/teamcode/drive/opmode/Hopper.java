@@ -15,9 +15,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class Hopper {
     public static double HOPPER_OFFSET = 0.04;
+    static int MAX_POS = 13;
     double position = 1;
     double pusherOffset = 0;
-    int pos = 0;
+    int pos = MAX_POS;
     Servo hopperServo;
     Gamepad gamepad;
     Telemetry telemetry;
@@ -54,7 +55,8 @@ public class Hopper {
             // TODO: Set hopper to position 2 (so that ball 2 is at the top)
             if (! buttonWasPressed) {
                 pos++;
-                if (pos>15) pos = 15;
+                if (pos>MAX_POS) pos = MAX_POS;
+                //if (pos == 14)
 
                 buttonWasPressed = true;
             }
@@ -91,11 +93,14 @@ public class Hopper {
 
     void nextPosition() {
     pos--;
+    if (pos<0) pos = MAX_POS;
+
     updatePosition();
     }
 
     void updatePosition() {
+        if (pos<0) pos = 0;
         //hopperServo.setPosition(((double) pos) /15.0*10.0/9.0+ HOPPER_OFFSET + pusherOffset);
-        hopperServo.setPosition(positionLookup[pos]);
+        hopperServo.setPosition(positionLookup[pos]+pusherOffset);
     }
 }

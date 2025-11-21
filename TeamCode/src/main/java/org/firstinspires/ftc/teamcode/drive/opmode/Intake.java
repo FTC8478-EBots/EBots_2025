@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -34,5 +38,25 @@ public class Intake {
 
         }
 
+    }
+    public class IntakeAction implements Action {
+        private boolean initialized = false;
+        public IntakeAction() {
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                intakeMotor.setVelocity(1);
+                initialized = true;
+            }
+            double vel = intakeMotor.getVelocity();
+            packet.put("intakeVelocity",vel);
+            //return true when still slow
+            return vel<0.7;
+        }
+    }
+    public Action intakeAction() {
+        return new Intake.IntakeAction();
     }
 }
