@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.opmode.Hopper;
 import org.firstinspires.ftc.teamcode.drive.opmode.Launch;
+import org.firstinspires.ftc.teamcode.drive.opmode.LightIndicator;
 import org.firstinspires.ftc.teamcode.drive.opmode.Push;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -140,9 +141,10 @@ public class RoyalOak2025 extends LinearOpMode {
             }
         }
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
+        LightIndicator indicator = new LightIndicator(hardwareMap, telemetry);
         Launch launch = new Launch(hardwareMap, null,telemetry);
-        Hopper hopper = new Hopper(hardwareMap,null,telemetry);
-        Push push = new Push(hardwareMap,null,hopper,launch);
+        Hopper hopper = new Hopper(hardwareMap,null,telemetry,this,indicator);
+        Push push = new Push(hardwareMap,null,hopper,launch, this);
 
 
 

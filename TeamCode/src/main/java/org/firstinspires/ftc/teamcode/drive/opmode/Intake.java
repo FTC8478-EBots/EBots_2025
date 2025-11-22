@@ -13,22 +13,30 @@ public class Intake {
     DcMotorEx intakeMotor;
     Gamepad gamepad;
     Hopper hopper;
+    ArtifactDetector artifactDetector;
+    LightIndicator indicator;
     boolean buttonWasPressed = false;
 
-    Intake(HardwareMap hardwareMap, Gamepad gamepad, Hopper hopper) {
+    Intake(HardwareMap hardwareMap, Gamepad gamepad, Hopper hopper, ArtifactDetector artifactDetector, LightIndicator indicator) {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         this.gamepad = gamepad;
         this.hopper = hopper;
+        this.artifactDetector = artifactDetector;
+        this.indicator = indicator;
     }
 
     void processGamepad() {
 
         if (gamepad.circle) {
             intakeMotor.setPower(1.0);
+
         }
         else if (gamepad.cross) {
             intakeMotor.setPower(-1.0);
-        }
+            if (artifactDetector.isArtifactDetected()) {
+                hopper.timedNextPosition();
+            }
+                }
         else {
             // Turn off intake
             intakeMotor.setPower(0);

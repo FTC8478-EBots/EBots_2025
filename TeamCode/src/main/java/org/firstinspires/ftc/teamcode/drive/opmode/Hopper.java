@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -16,12 +17,17 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Hopper {
     public static double HOPPER_OFFSET = 0.04;
     static int MAX_POS = 13;
+    static double MIN_TIME = .5;
+    double earliestActivation = -1;
     double position = 1;
     double pusherOffset = 0;
     int pos = MAX_POS;
     Servo hopperServo;
     Gamepad gamepad;
     Telemetry telemetry;
+    OpMode opMode;
+    LightIndicator lightIndicator;
+
     boolean buttonWasPressed = false;
     double[] positionLookup = {
             0,
@@ -40,11 +46,13 @@ public class Hopper {
             .96,
     };
 
-    public Hopper(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry) {
+    public Hopper(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry, OpMode opMode, LightIndicator lightIndicator) {
         this.gamepad = gamepad;
         hopperServo = hardwareMap.get(Servo.class, "hopper");
         hopperServo.setPosition(position);
         this.telemetry = telemetry;
+        this.opMode = opMode;
+        this.lightIndicator = lightIndicator;
     }
     void setPusherOffset(double offset) {
         pusherOffset = offset;
@@ -56,7 +64,10 @@ public class Hopper {
             if (! buttonWasPressed) {
                 pos++;
                 if (pos>MAX_POS) pos = MAX_POS;
-                //if (pos == 14)
+                if (pos == MAX_POS)
+                    lightIndicator.setRed();
+                else
+                    lightIndicator.setBlack();
 
                 buttonWasPressed = true;
             }
@@ -66,6 +77,11 @@ public class Hopper {
 
                 pos--;
                 if (pos<0) pos = 0;
+                if (pos == 0)
+                    lightIndicator.setRed();
+                else
+                    lightIndicator.setBlack();
+
                 buttonWasPressed = true;
 
             }
@@ -93,9 +109,15 @@ public class Hopper {
 
     void nextPosition() {
     pos--;
-    if (pos<0) pos = MAX_POS;
+    if (pos<0) pos = 0;
 
     updatePosition();
+    }
+    void timedNextPosition() {
+        if (opMode.time>earliestActivation) {
+            earliestActivation = opMode.time+MIN_TIME;
+            nextPosition();
+        }
     }
 
     void updatePosition() {

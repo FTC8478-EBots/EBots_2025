@@ -21,6 +21,7 @@ public class Launch {
     DcMotorEx launchMotor;
     Gamepad gamepad;
     Telemetry telemetry;
+    boolean pressed = false;
 double targetVelocity;
 
     public Launch(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry) {
@@ -43,6 +44,20 @@ double targetVelocity;
             launchMotor.setVelocity(LAUNCH_VELOCITY);
         } else {
             launchMotor.setVelocity(0);
+        }
+
+        if (gamepad.dpad_left) {
+            if (!pressed) {
+                LAUNCH_VELOCITY -= 20;
+                pressed = true;
+            }
+        } else if (gamepad.dpad_right) {
+            if (!pressed) {
+                LAUNCH_VELOCITY += 20;
+                pressed = true;
+            }
+        } else {
+            pressed = false;
         }
 
         telemetry.addData("LAUNCH_VELOCITY:", launchMotor.getVelocity());
