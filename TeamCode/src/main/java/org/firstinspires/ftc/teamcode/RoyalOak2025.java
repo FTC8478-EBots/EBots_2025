@@ -141,9 +141,9 @@ public class RoyalOak2025 extends LinearOpMode {
             }
         }
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
-        LightIndicator indicator = new LightIndicator(hardwareMap, telemetry);
-        Launch launch = new Launch(hardwareMap, null,telemetry);
-        Hopper hopper = new Hopper(hardwareMap,null,telemetry,this,indicator);
+        LightIndicator lightIndicator = new LightIndicator(hardwareMap, telemetry, "lightIndicator");
+        Hopper hopper = new Hopper(hardwareMap,null,telemetry,this, lightIndicator, null);
+        Launch launch = new Launch(hardwareMap, null,telemetry, hopper, null);
         Push push = new Push(hardwareMap,null,hopper,launch, this);
 
 

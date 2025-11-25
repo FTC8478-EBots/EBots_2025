@@ -22,14 +22,15 @@ public class ArtifactDetector {
     double DISTANCE_TO_TARGET = 4.0;
     private RevColorSensorV3 test_color;
 Telemetry telemetry ;
+LightIndicator lightIndicator;
 
 
 
 
-    ArtifactDetector(HardwareMap hardwareMap, Telemetry telemetry) {
-        test_color = hardwareMap.get(RevColorSensorV3.class, "testColor");
-this.telemetry = telemetry;
-
+    ArtifactDetector(HardwareMap hardwareMap, Telemetry telemetry, String deviceName, LightIndicator lightIndicator) {
+        test_color = hardwareMap.get(RevColorSensorV3.class, deviceName);
+        this.telemetry = telemetry;
+        this.lightIndicator = lightIndicator;
     }
 
     boolean isArtifactDetected() {
@@ -37,23 +38,42 @@ this.telemetry = telemetry;
         telemetry.addData("ArtifactDistance", distance);
         return distance< DISTANCE_TO_TARGET;
     }
-
-
-
-
-        public void recognizeColor() {
-
-
-                telemetry.addData("Light Detected", ((OpticalDistanceSensor) test_color).getLightDetected());
-                NormalizedRGBA colors = test_color.getNormalizedColors();
-
-                //Determining the amount of red, green, and blue
-                telemetry.addData("Red", "%.3f", colors.red);
-                telemetry.addData("Green", "%.3f", colors.green);
-                telemetry.addData("Blue", "%.3f", colors.blue);
+public void updateIndicator(){
+        if (lightIndicator == null) return;
+        if (isArtifactDetected()){
+            if (isArtifactdetectorPurple()){
+                lightIndicator.setViolet();
 
             }
+            else{
+                lightIndicator.setGreen();
+            }
+    } else {
+            lightIndicator.setBlack();
         }
+}
+
+
+
+        public boolean isArtifactdetectorPurple() {
+
+
+            telemetry.addData("Light Detected", ((OpticalDistanceSensor) test_color).getLightDetected());
+            NormalizedRGBA colors = test_color.getNormalizedColors();
+
+            //Determining the amount of red, green, and blue
+            telemetry.addData("Red", "%.3f", colors.red);
+            telemetry.addData("Green", "%.3f", colors.green);
+            telemetry.addData("Blue", "%.3f", colors.blue);
+
+            if (colors.blue > colors.green) {
+                return true;
+            }
+            return false;
+        }
+
+
+}
 
 
 

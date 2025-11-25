@@ -23,12 +23,19 @@ public class Testteleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         MecanumDrive drive = new MecanumDrive(hardwareMap, null);
-        LightIndicator lightIndicator = new LightIndicator(hardwareMap, telemetry);
-        Launch launch = new Launch(hardwareMap, gamepad2, telemetry);
-        ArtifactDetector artifactDetector = new ArtifactDetector(hardwareMap, telemetry);
-        LightIndicator indicator = new LightIndicator(hardwareMap, telemetry);
-        Hopper hopper = new Hopper(hardwareMap, gamepad2, telemetry,this,lightIndicator);
-        Intake intake = new Intake(hardwareMap, gamepad2, hopper, artifactDetector, indicator);
+
+        LightIndicator indicator1 = new LightIndicator(hardwareMap, telemetry, "lightIndicator1");
+        LightIndicator indicator2 = new LightIndicator(hardwareMap, telemetry, "lightIndicator2");
+        LightIndicator indicator3 = new LightIndicator(hardwareMap, telemetry, "lightIndicator3");
+
+
+
+        ArtifactDetector intakeDetector = new ArtifactDetector(hardwareMap, telemetry, "intakeDetector", indicator1);
+        ArtifactDetector launchDetector = new ArtifactDetector(hardwareMap, telemetry, "launchDetector", indicator2);
+        ArtifactDetector storageDetector = new ArtifactDetector(hardwareMap, telemetry, "storageDetector", indicator3);
+        Hopper hopper = new Hopper(hardwareMap, gamepad2, telemetry,this, indicator1, intakeDetector);
+        Launch launch = new Launch(hardwareMap, gamepad2, telemetry, hopper,launchDetector );
+        Intake intake = new Intake(hardwareMap, gamepad2, hopper, intakeDetector, indicator1, telemetry);
         Push push = new Push(hardwareMap, gamepad2, hopper, launch, this);
 
         waitForStart();
@@ -42,7 +49,9 @@ public class Testteleop extends LinearOpMode {
                     ));
             intake.processGamepad();
             launch.processGamepad();
-            //artifactDetector.recognizeColor();
+            intakeDetector.updateIndicator();
+            launchDetector.updateIndicator();
+            storageDetector.updateIndicator();
             hopper.processGamepad();
             push.processGamepad();
             //drive.update();

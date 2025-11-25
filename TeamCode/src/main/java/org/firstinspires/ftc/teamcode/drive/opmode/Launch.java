@@ -22,13 +22,17 @@ public class Launch {
     Gamepad gamepad;
     Telemetry telemetry;
     boolean pressed = false;
-double targetVelocity;
+    Hopper hopper;
+    double targetVelocity;
+    private final ArtifactDetector launchDetector;
 
-    public Launch(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry) {
+    public Launch(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry, Hopper hopper, ArtifactDetector launchDetector) {
         launchMotor = hardwareMap.get(DcMotorEx.class, "launch");
         this.gamepad = gamepad;
+        this.launchDetector = launchDetector;
         launchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         launchMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.hopper = hopper;
 
         this.telemetry = telemetry;
 
@@ -40,10 +44,14 @@ double targetVelocity;
         //Testing always on motor in initialization so this code does nothing right now
         if (gamepad.square) {
             launchMotor.setVelocity(-LAUNCH_VELOCITY);
+
         }else if (gamepad.triangle) {
             launchMotor.setVelocity(LAUNCH_VELOCITY);
+            hopper.setPusherOffset(-0.01);
+
         } else {
             launchMotor.setVelocity(0);
+            hopper.setPusherOffset(0);
         }
 
         if (gamepad.dpad_left) {
@@ -59,9 +67,15 @@ double targetVelocity;
         } else {
             pressed = false;
         }
-
+        if (!launchDetector.isArtifactDetected() && gamepad.triangle) {
+            nextPostion();
+        }
         telemetry.addData("LAUNCH_VELOCITY:", launchMotor.getVelocity());
+
     }
+
+    private void nextPostion() {
+    }//if error occurs check nextPosition
 
     boolean isFast() {
         return (launchMotor.getVelocity()/LAUNCH_VELOCITY)>.8;

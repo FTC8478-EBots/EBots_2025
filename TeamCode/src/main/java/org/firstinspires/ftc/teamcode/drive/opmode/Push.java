@@ -27,7 +27,7 @@ public class Push {
     public static double push = 1.0;
     //25901 PUSH OFFSET -0.01
     //8478  pUSH OFFSET
-    public static double PUSH_OFFSET = -.01;
+    //public static double PUSH_OFFSET = -.01;
     public Push(HardwareMap hardwareMap, Gamepad gamepad, Hopper hopper, Launch launch, LinearOpMode opMode) {
         this.gamepad = gamepad;
         this.hopper = hopper;
@@ -39,22 +39,24 @@ public class Push {
 
     void processGamepad()  {
         if (gamepad.dpad_up && launch.isFast() && !pushed) {
-            hopper.setPusherOffset(PUSH_OFFSET);
+/*hopper.setPusherOffset(PUSH_OFFSET);
             try {
-                Thread.sleep(100);
+  //              Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            pushServo.setPosition(push);
+  */          pushServo.setPosition(push);
             pushed = true;
         }
         else if (!gamepad.dpad_up) {
-            hopper.setPusherOffset(0);
+    /*        hopper.setPusherOffset(0);
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            */
+
             pushServo.setPosition(park);
             pushed = false;
         }
@@ -73,7 +75,7 @@ public class Push {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-                hopper.setPusherOffset(PUSH_OFFSET);
+       //         hopper.setPusherOffset(PUSH_OFFSET);
 
                 pushServo.setPosition(position);
 

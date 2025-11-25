@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 
 public class Intake {
     DcMotorEx intakeMotor;
@@ -17,7 +19,7 @@ public class Intake {
     LightIndicator indicator;
     boolean buttonWasPressed = false;
 
-    Intake(HardwareMap hardwareMap, Gamepad gamepad, Hopper hopper, ArtifactDetector artifactDetector, LightIndicator indicator) {
+    Intake(HardwareMap hardwareMap, Gamepad gamepad, Hopper hopper, ArtifactDetector artifactDetector, LightIndicator indicator, Telemetry telemetry) {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         this.gamepad = gamepad;
         this.hopper = hopper;

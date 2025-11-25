@@ -11,9 +11,9 @@ public class LightIndicator {
     Telemetry telemetry;
     int position;
 
-    public LightIndicator(HardwareMap hardwareMap, Telemetry telemetry) {
+    public LightIndicator(HardwareMap hardwareMap, Telemetry telemetry, String lightIndicator) {
         //this.gamepad = gamepad;
-        light = hardwareMap.get(Servo.class, "light");
+        light = hardwareMap.get(Servo.class, lightIndicator);
         light.setPosition(position);
         this.telemetry = telemetry;
     }

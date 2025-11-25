@@ -7,7 +7,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -18,17 +17,20 @@ public class Hopper {
     public static double HOPPER_OFFSET = 0.04;
     static int MAX_POS = 13;
     static double MIN_TIME = .5;
+    private final ArtifactDetector intakeDetector;
     double earliestActivation = -1;
-    double position = 1;
+    double initialHopperPosition = 1;
     double pusherOffset = 0;
     int pos = MAX_POS;
+    int numberArtifacts = 0;
     Servo hopperServo;
     Gamepad gamepad;
     Telemetry telemetry;
     OpMode opMode;
     LightIndicator lightIndicator;
-
     boolean buttonWasPressed = false;
+    boolean artifactIsDetected = false;
+
     double[] positionLookup = {
             0,
             0.07,
@@ -46,13 +48,14 @@ public class Hopper {
             .96,
     };
 
-    public Hopper(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry, OpMode opMode, LightIndicator lightIndicator) {
+    public Hopper(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry, OpMode opMode, LightIndicator lightIndicator, ArtifactDetector intakeDetector) {
         this.gamepad = gamepad;
         hopperServo = hardwareMap.get(Servo.class, "hopper");
-        hopperServo.setPosition(position);
+        hopperServo.setPosition(initialHopperPosition);
         this.telemetry = telemetry;
         this.opMode = opMode;
         this.lightIndicator = lightIndicator;
+        this.intakeDetector = intakeDetector;
     }
     void setPusherOffset(double offset) {
         pusherOffset = offset;
@@ -73,10 +76,10 @@ public class Hopper {
             }
         } else if (gamepad.left_bumper) {
             // TODO: Set hopped to position 3  (so that ball 3 is at the top)
-            if (! buttonWasPressed) {
+            if (!buttonWasPressed) {
 
                 pos--;
-                if (pos<0) pos = 0;
+                if (pos < 0) pos = 0;
                 if (pos == 0)
                     lightIndicator.setRed();
                 else
@@ -85,13 +88,28 @@ public class Hopper {
                 buttonWasPressed = true;
 
             }
+        } else if (gamepad.dpad_down){
+                pos = 13;
+
         } else {
             buttonWasPressed = false;
         }
+        if (!artifactIsDetected && intakeDetector.isArtifactDetected() && gamepad.circle) {
+            numberArtifacts++;
+            artifactIsDetected = true;
+            nextPosition();
+            //TODO: delay 0.5 seconds
+        } else if(!intakeDetector.isArtifactDetected())
+        {
+            artifactIsDetected = false;
+        }
 
+        telemetry.addData("Numberofartifacts",numberArtifacts);
         telemetry.addData("position",pos);
             updatePosition();
         }
+
+
 
         class HopperAction implements Action {
             @Override
@@ -124,5 +142,7 @@ public class Hopper {
         if (pos<0) pos = 0;
         //hopperServo.setPosition(((double) pos) /15.0*10.0/9.0+ HOPPER_OFFSET + pusherOffset);
         hopperServo.setPosition(positionLookup[pos]+pusherOffset);
+
     }
+
 }
