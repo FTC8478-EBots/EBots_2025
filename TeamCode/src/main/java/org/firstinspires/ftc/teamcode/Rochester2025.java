@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.drive.opmode.Launch;
 import org.firstinspires.ftc.teamcode.drive.opmode.Push;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
@@ -157,7 +158,7 @@ public class Rochester2025 extends LinearOpMode {
                 //.strafeTo(new Vector2d(-20,-20))
                 //.strafeTo(new Vector2d(-29, -29) )
                 //-8.turn(Math.toRadians(-90))
-                .strafeTo(new Vector2d(-15, -15))
+                .strafeTo(new Vector2d(-9, -9))
                 .turn(Math.toRadians(-135))
                 .stopAndAdd(new SequentialAction(intake.intakeAction()))
                 .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
@@ -167,7 +168,7 @@ public class Rochester2025 extends LinearOpMode {
                 ;
 
         TrajectoryActionBuilder blueCloseDrive = drive.actionBuilder(new Pose2d(-50, -50, Math.toRadians(45)))
-                .strafeTo(new Vector2d(-15, -15))
+                .strafeTo(new Vector2d(-9, -9))
                 .stopAndAdd(new SequentialAction(intake.intakeAction()))
                 .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
                 .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
@@ -181,9 +182,16 @@ public class Rochester2025 extends LinearOpMode {
                 //.strafeTo(new Vector2d(-20,20))
                 //.strafeTo(new Vector2d(-29, 29) )
                 //.turn(Math.toRadians(90))
+                .strafeTo(new Vector2d(-9, 9))
+                .turn(Math.toRadians(135))
+                .stopAndAdd(new SequentialAction(intake.intakeAction()))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(launch.stopAction())
                 ;
         TrajectoryActionBuilder redCloseDrive = drive.actionBuilder(new Pose2d(-50, 50, Math.toRadians(45)))
-                .strafeTo(new Vector2d(-15, 15) )
+                .strafeTo(new Vector2d(-9, 9) )
                 .stopAndAdd(new SequentialAction(intake.intakeAction()))
                 .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
                 .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
@@ -293,17 +301,22 @@ public class Rochester2025 extends LinearOpMode {
         myAprilTagDetections = myAprilTagProcessor.getDetections();
 
 // Cycle through through the list and process each AprilTag.
-        /*for (AprilTagDetection a : myAprilTagDetections) {
+        while (!isStarted()){
+        for (AprilTagDetection a : myAprilTagDetections) {
             myAprilTagDetection = a;
             if (myAprilTagDetection.metadata != null) {  // This check for non-null Metadata is not needed for reading only ID code.
                 myAprilTagIdCode = myAprilTagDetection.id;
+                AprilTagPoseFtc myAprilTagPosition = myAprilTagDetection.ftcPose;
                 telemetry.addData("ID", myAprilTagIdCode);
-
+                telemetry.addData("X-Value", myAprilTagPosition.x);
+                telemetry.addData("Y-Value", myAprilTagPosition.y);
+                telemetry.addData("Rotation", myAprilTagPosition.yaw);
                 // Now take action based on this tag's ID code, or store info for later action.
 
             }
             telemetry.update();
-        }*/
+        }
+        }
         waitForStart();
         //AUTON STEPaw
         if (isStopRequested()) return;

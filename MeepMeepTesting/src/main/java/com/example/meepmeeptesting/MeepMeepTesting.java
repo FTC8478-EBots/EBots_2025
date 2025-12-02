@@ -82,7 +82,7 @@ public class MeepMeepTesting {
                 .setBackgroundAlpha(0.95f)
                 //.addEntity(myBot)
                 .addEntity(mySecondBot)
-                /*.addEntity(myThirdBot)*/
+                .addEntity(myThirdBot)
                 //.addEntity(myFourthBot)
                 .start();
     }
