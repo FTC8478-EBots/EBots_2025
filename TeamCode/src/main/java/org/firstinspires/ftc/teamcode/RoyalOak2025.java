@@ -87,7 +87,7 @@ public class RoyalOak2025 extends LinearOpMode {
         // instantiate your MecanumDrive at a particular pose.
         Pose2d initialPose = (new Pose2d(-50, -50, Math.toRadians(45)));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
-        Launch launch = new Launch(hardwareMap, null,telemetry);
+        Launch launch = new Launch(hardwareMap, null,telemetry, null);
 
 
 

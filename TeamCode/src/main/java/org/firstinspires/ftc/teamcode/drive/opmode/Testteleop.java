@@ -23,22 +23,31 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 public class Testteleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
+        AutoSteerCamera autoSteerCamera = new AutoSteerCamera(hardwareMap,telemetry);
         MecanumDrive drive = new MecanumDrive(hardwareMap, null);
         Intake intake = new Intake(hardwareMap, gamepad2,telemetry);
-        Launch launch = new Launch(hardwareMap, gamepad2, telemetry);
+        Launch launch = new Launch(hardwareMap, gamepad2, telemetry, autoSteerCamera);
         ArtifactDetector artifactDetector = new ArtifactDetector(hardwareMap, gamepad2, telemetry);
         Hopper hopper = new Hopper(hardwareMap, gamepad2, telemetry);
         Push push = new Push(hardwareMap, gamepad2, hopper, launch);
-        AutoSteerCamera autoSteerCamera = new AutoSteerCamera(hardwareMap,telemetry);
         waitForStart();
 
         while (!isStopRequested()) {
-            drive.setDrivePowers(
-                    new PoseVelocity2d(new Vector2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x),
-                            -gamepad1.right_stick_x
-                    ));
+            if (gamepad1.dpad_up) {
+                drive.setDrivePowers(
+                        new PoseVelocity2d(new Vector2d(
+                                -0,0),
+                                -autoSteerCamera.headingtogoal()/16.0
+                        ));
+            }
+            else{
+                drive.setDrivePowers(
+                        new PoseVelocity2d(new Vector2d(
+                                -gamepad1.left_stick_y,
+                                -gamepad1.left_stick_x),
+                                -gamepad1.right_stick_x
+                        ));
+            }
             intake.processGamepad();
             launch.processGamepad();
             //artifactDetector.recognizeColor();

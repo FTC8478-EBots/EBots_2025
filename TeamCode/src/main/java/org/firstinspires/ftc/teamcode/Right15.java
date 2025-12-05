@@ -118,7 +118,7 @@ public class Right15 extends LinearOpMode {
     }
     @Override
     public void runOpMode() {
-        Launch launch = new Launch(hardwareMap, null,telemetry);
+        Launch launch = new Launch(hardwareMap, null,telemetry, null);
         Hopper hopper = new Hopper(hardwareMap,null,telemetry);
         Push push = new Push(hardwareMap,null,hopper,launch);
         Intake intake = new Intake(hardwareMap,null,telemetry);

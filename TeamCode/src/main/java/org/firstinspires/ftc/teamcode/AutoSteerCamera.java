@@ -13,14 +13,29 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
+/*RED Parking
+position=(0.830 -0.708 0.090)m,
+
+
+
+                */
+
+
+
+
+
 public class AutoSteerCamera {
-    private Limelight3A limelight;
+    Limelight3A limelight;
     private Telemetry telemetry;
 
     public AutoSteerCamera (HardwareMap hardwareMap, Telemetry telemetry) {
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight = hardwareMap.get(Limelight3A.class, "Limelight");
         this.telemetry = telemetry;
-
+    start();
+    }
+    public void start(){
+        limelight.start();
+        limelight.pipelineSwitch(0);
     }
 public double distancetogoal(){
     LLResult result = limelight.getLatestResult();
@@ -28,7 +43,7 @@ public double distancetogoal(){
         if (result.isValid()) {
             result.getBotposeAvgDist();
             double distance = result.getBotposeAvgDist();
-            telemetry.addData("distance", distance);
+            //telemetry.addData("distance", distance);
 return distance;
 
         }
@@ -37,16 +52,34 @@ return distance;
         return -1;
 }
 
+    public double headingtogoal() {
+        LLResult result = limelight.getLatestResult();
+        if (result != null) {
+            if (result.isValid()) {
+                double angle = result.getTx();
+                telemetry.addData("angle", angle);
+                return angle;
+
+            }
+
+        }
+        return 0;
+    }
 public void updateResults() {
     LLResult result = limelight.getLatestResult();
             if (result != null) {
         if (result.isValid()) {
             Pose3D botpose = result.getBotpose();
-            telemetry.addData("Angle left-right", result.getTx());
-            telemetry.addData("Angle up-down", result.getTy());
-            telemetry.addData("Robot position", botpose.toString());
-
+            //telemetry.addData("Angle left-right", result.getTx());
+            //telemetry.addData("Angle up-down", result.getTy());
+            //telemetry.addData("Robot position", botpose.toString());
+            //telemetry.addData("Distance to Goal",this::distancetogoal);
+        }
+        else {
+            //telemetry.addData("!Valid",8320);
         }
     }
+            //telemetry.update();
+
     }
 }

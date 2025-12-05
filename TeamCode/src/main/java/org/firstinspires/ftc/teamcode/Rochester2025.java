@@ -10,10 +10,13 @@ import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.drive.opmode.Hopper;
 import org.firstinspires.ftc.teamcode.drive.opmode.Intake;
 import org.firstinspires.ftc.teamcode.drive.opmode.Launch;
@@ -119,11 +122,11 @@ public class Rochester2025 extends LinearOpMode {
     }
     @Override
     public void runOpMode() {
-        Launch launch = new Launch(hardwareMap, null,telemetry);
+        AutoSteerCamera camera = new AutoSteerCamera(hardwareMap, telemetry);
+        Launch launch = new Launch(hardwareMap, null,telemetry, camera);
         Hopper hopper = new Hopper(hardwareMap,null,telemetry);
         Push push = new Push(hardwareMap,null,hopper,launch);
         Intake intake = new Intake(hardwareMap,null,telemetry);
-
         boolean far = determineAreWeFar();
         boolean red = determineAreWeRed();
         boolean test = determineTest();
@@ -277,46 +280,28 @@ public class Rochester2025 extends LinearOpMode {
                 //launch 3 balls
                 .stopAndAdd(new SequentialAction(launch.launchAction()))*/
                 ;
-        //launch.activateLaunch();
-        //while (!isStopRequested() && !opModeIsActive()) {
-        //     int position = visionOutputPosition;
-        //     telemetry.addData("Position during Init", position);
-        //     telemetry.update();
-        // }
+        while (!isStopRequested() && !opModeIsActive()) {
+            LLResult result = camera.limelight.getLatestResult();
+            if (result != null) {
+                if (result.isValid()) {
+                    Pose3D botpose = result.getBotpose();
+                    telemetry.addData("Angle left-right", result.getTx());
+                    telemetry.addData("Angle up-down", result.getTy());
+                    telemetry.addData("Robot position", botpose.toString());
+                    telemetry.addData("Distance to Goal",camera.distancetogoal());
+                }
+                else {
+                    telemetry.addData("!Valid",8320);
+                }
+            }
+            telemetry.addData("DIE",1);
+    telemetry.update();
+         }
         int startPosition = visionOutputPosition;
         telemetry.addData("Starting Position", startPosition);
         telemetry.update();
         //
-        AprilTagProcessor myAprilTagProcessor;
-        myAprilTagProcessor =  new AprilTagProcessor.Builder().build();
-        VisionPortal myVisionPortal;
-        myVisionPortal = new VisionPortal.Builder()
-                .setCamera(hardwareMap.get(WebcamName.class,"Camera"))
-                .addProcessor(myAprilTagProcessor).build();
-        //myVisionPortal.addProcessor(myAprilTagProcessor);
-        List<AprilTagDetection> myAprilTagDetections;
-        AprilTagDetection myAprilTagDetection;
-        int myAprilTagIdCode;
-        // Get a list of AprilTag detections.
-        myAprilTagDetections = myAprilTagProcessor.getDetections();
 
-// Cycle through through the list and process each AprilTag.
-        while (!isStarted()){
-        for (AprilTagDetection a : myAprilTagDetections) {
-            myAprilTagDetection = a;
-            if (myAprilTagDetection.metadata != null) {  // This check for non-null Metadata is not needed for reading only ID code.
-                myAprilTagIdCode = myAprilTagDetection.id;
-                AprilTagPoseFtc myAprilTagPosition = myAprilTagDetection.ftcPose;
-                telemetry.addData("ID", myAprilTagIdCode);
-                telemetry.addData("X-Value", myAprilTagPosition.x);
-                telemetry.addData("Y-Value", myAprilTagPosition.y);
-                telemetry.addData("Rotation", myAprilTagPosition.yaw);
-                // Now take action based on this tag's ID code, or store info for later action.
-
-            }
-            telemetry.update();
-        }
-        }
         waitForStart();
         //AUTON STEPaw
         if (isStopRequested()) return;
@@ -342,27 +327,9 @@ public class Rochester2025 extends LinearOpMode {
                         trajectoryActionChosen)
         );
         //Scan the April Tag.
-        int good=-1;
-        for (AprilTagDetection a : myAprilTagDetections) {
-            myAprilTagDetection = a;
-            if (myAprilTagDetection.metadata != null) {
-                myAprilTagIdCode = myAprilTagDetection.id;
-                telemetry.addData("ID", myAprilTagIdCode);
-                if(21 <= myAprilTagIdCode&& 23>=  myAprilTagIdCode){
-                    good =  myAprilTagIdCode;
-                }
-            }
-            telemetry.update();
-        }
-        if(good == 22){
-            // Sorter rotate (1)
-        }
-        if(good == 23) {
-            // sorter rotate (2)
-        }
+
         if (!test) {
-            if (!red) {
-                trajectoryActionChosen = blueTrajectory.build();
+            if (!red) {trajectoryActionChosen = blueTrajectory.build();
             } else {
                 trajectoryActionChosen = redTrajectory.build();
             }
