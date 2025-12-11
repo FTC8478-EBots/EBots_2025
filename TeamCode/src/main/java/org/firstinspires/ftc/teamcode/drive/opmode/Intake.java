@@ -18,7 +18,7 @@ public class Intake {
     Hopper hopper;
     ArtifactDetector artifactDetector;
     LightIndicator indicator;
-    boolean buttonWasPressed = false;
+
     Servo intakeServo;
     Intake(HardwareMap hardwareMap, Gamepad gamepad, Hopper hopper, ArtifactDetector artifactDetector, LightIndicator indicator, Telemetry telemetry) {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
