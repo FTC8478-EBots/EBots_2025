@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -18,9 +19,10 @@ public class Intake {
     ArtifactDetector artifactDetector;
     LightIndicator indicator;
     boolean buttonWasPressed = false;
-
-    public Intake(HardwareMap hardwareMap, Gamepad gamepad, Hopper hopper, ArtifactDetector artifactDetector, LightIndicator indicator, Telemetry telemetry) {
+    Servo intakeServo;
+    Intake(HardwareMap hardwareMap, Gamepad gamepad, Hopper hopper, ArtifactDetector artifactDetector, LightIndicator indicator, Telemetry telemetry) {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
+        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
         this.gamepad = gamepad;
         this.hopper = hopper;
         this.artifactDetector = artifactDetector;
@@ -35,6 +37,7 @@ public class Intake {
         }
         else if (gamepad.cross) {
             intakeMotor.setPower(-1.0);
+            intakeServo.setPosition(1);
             if (artifactDetector.isArtifactDetected()) {
                 hopper.timedNextPosition();
             }
@@ -42,7 +45,7 @@ public class Intake {
         else {
             // Turn off intake
             intakeMotor.setPower(0);
-
+            intakeServo.setPosition(0.5);
             // Rotate hopper to  next position
             //hopper.nextPosition();
 
