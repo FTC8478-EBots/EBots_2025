@@ -17,10 +17,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.teamcode.drive.opmode.ArtifactDetector;
 import org.firstinspires.ftc.teamcode.drive.opmode.Hopper;
 import org.firstinspires.ftc.teamcode.drive.opmode.Intake;
 import org.firstinspires.ftc.teamcode.drive.opmode.Launch;
+import org.firstinspires.ftc.teamcode.drive.opmode.LightIndicator;
 import org.firstinspires.ftc.teamcode.drive.opmode.Push;
+import org.firstinspires.ftc.teamcode.drive.opmode.Robot;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
@@ -29,7 +32,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 
 @Config
-@Autonomous(name = "Rochester2025", group = "Autonomous", preselectTeleOp = "TestTeleop")
+@Autonomous(name = "Rochester2025", group = "Autonomous", preselectTeleOp = "Testteleop")
 public class Rochester2025 extends LinearOpMode {
     //INIT STEP
 
@@ -122,11 +125,17 @@ public class Rochester2025 extends LinearOpMode {
     }
     @Override
     public void runOpMode() {
-        AutoSteerCamera camera = new AutoSteerCamera(hardwareMap, telemetry);
-        Launch launch = new Launch(hardwareMap, null,telemetry, camera);
-        Hopper hopper = new Hopper(hardwareMap,null,telemetry);
-        Push push = new Push(hardwareMap,null,hopper,launch);
-        Intake intake = new Intake(hardwareMap,null,telemetry);
+        AutoSteerCamera autoSteerCamera = new AutoSteerCamera(hardwareMap, telemetry);
+        LightIndicator indicator1 = new LightIndicator(hardwareMap, telemetry, "lightIndicator1");
+        LightIndicator indicator2 = new LightIndicator(hardwareMap, telemetry, "lightIndicator2");
+        LightIndicator indicator3 = new LightIndicator(hardwareMap, telemetry, "lightIndicator3");
+        ArtifactDetector intakeDetector = new ArtifactDetector(hardwareMap, telemetry, "intakeDetector", indicator1);
+        ArtifactDetector launchDetector = new ArtifactDetector(hardwareMap, telemetry, "launchDetector", indicator2);
+        ArtifactDetector storageDetector = new ArtifactDetector(hardwareMap, telemetry, "storageDetector", indicator3);
+        Hopper hopper = new Hopper(hardwareMap, gamepad2, telemetry,this, indicator1, intakeDetector);
+        Launch launch = new Launch(hardwareMap, gamepad2, telemetry, hopper,launchDetector ,autoSteerCamera);
+        Intake intake = new Intake(hardwareMap, gamepad2, hopper, intakeDetector, indicator1, telemetry);
+        Push push = new Push(hardwareMap, gamepad2, hopper, launch, this);
         boolean far = determineAreWeFar();
         boolean red = determineAreWeRed();
         boolean test = determineTest();
@@ -164,18 +173,18 @@ public class Rochester2025 extends LinearOpMode {
                 .strafeTo(new Vector2d(-20, -25))
                 .turn(Math.toRadians(-135))
                 .stopAndAdd(new SequentialAction(intake.intakeAction()))
-                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
-                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
-                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(1), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(1), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(1), push.getLaunchSequence(),new SleepAction(.5)))
                 .stopAndAdd(launch.stopAction())
                 ;
 
         TrajectoryActionBuilder blueCloseDrive = drive.actionBuilder(new Pose2d(-50, -50, Math.toRadians(45)))
                 .strafeTo(new Vector2d(-20, -25))
                 .stopAndAdd(new SequentialAction(intake.intakeAction()))
-                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
-                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
-                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(1), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(1), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(1), push.getLaunchSequence(),new SleepAction(.5)))
                 .stopAndAdd(launch.stopAction())
 
                 //was -29 -29
@@ -188,17 +197,17 @@ public class Rochester2025 extends LinearOpMode {
                 .strafeTo(new Vector2d(-20, 25))
                 .turn(Math.toRadians(135))
                 .stopAndAdd(new SequentialAction(intake.intakeAction()))
-                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
-                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
-                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(1), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(1), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(1), push.getLaunchSequence(),new SleepAction(.5)))
                 .stopAndAdd(launch.stopAction())
                 ;
         TrajectoryActionBuilder redCloseDrive = drive.actionBuilder(new Pose2d(-50, 50, Math.toRadians(-45)))
                 .strafeTo(new Vector2d(-20, 25) )
                 .stopAndAdd(new SequentialAction(intake.intakeAction()))
-                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
-                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
-                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(.5), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(1), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(1), push.getLaunchSequence(),new SleepAction(.5)))
+                .stopAndAdd(new SequentialAction(hopper.getAction(),new SleepAction(1), launch.launchAction(), new SleepAction(1), push.getLaunchSequence(),new SleepAction(.5)))
                 .stopAndAdd(launch.stopAction())
 
                 //was -29 29
@@ -281,14 +290,14 @@ public class Rochester2025 extends LinearOpMode {
                 .stopAndAdd(new SequentialAction(launch.launchAction()))*/
                 ;
         while (!isStopRequested() && !opModeIsActive()) {
-            LLResult result = camera.limelight.getLatestResult();
+            LLResult result = autoSteerCamera.limelight.getLatestResult();
             if (result != null) {
                 if (result.isValid()) {
                     Pose3D botpose = result.getBotpose();
                     telemetry.addData("Angle left-right", result.getTx());
                     telemetry.addData("Angle up-down", result.getTy());
                     telemetry.addData("Robot position", botpose.toString());
-                    telemetry.addData("Distance to Goal",camera.distancetogoal());
+                    telemetry.addData("Distance to Goal",autoSteerCamera.distancetogoal());
                 }
                 else {
                     telemetry.addData("!Valid",8320);
@@ -339,5 +348,6 @@ public class Rochester2025 extends LinearOpMode {
                         trajectoryActionChosen)
         ); );
 */
+        Robot.current = drive.localizer.getPose();
     }
 }

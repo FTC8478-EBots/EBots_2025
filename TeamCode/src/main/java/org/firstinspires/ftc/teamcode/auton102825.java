@@ -13,7 +13,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.drive.opmode.ArtifactDetector;
+import org.firstinspires.ftc.teamcode.drive.opmode.Hopper;
+import org.firstinspires.ftc.teamcode.drive.opmode.Intake;
 import org.firstinspires.ftc.teamcode.drive.opmode.Launch;
+import org.firstinspires.ftc.teamcode.drive.opmode.LightIndicator;
+import org.firstinspires.ftc.teamcode.drive.opmode.Push;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -87,7 +92,17 @@ public class auton102825 extends LinearOpMode {
         // instantiate your MecanumDrive at a particular pose.
         Pose2d initialPose = (new Pose2d(-50, -50, Math.toRadians(45)));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
-        Launch launch = new Launch(hardwareMap, null,telemetry, null);
+        AutoSteerCamera autoSteerCamera = new AutoSteerCamera(hardwareMap, telemetry);
+        LightIndicator indicator1 = new LightIndicator(hardwareMap, telemetry, "lightIndicator1");
+        LightIndicator indicator2 = new LightIndicator(hardwareMap, telemetry, "lightIndicator2");
+        LightIndicator indicator3 = new LightIndicator(hardwareMap, telemetry, "lightIndicator3");
+        ArtifactDetector intakeDetector = new ArtifactDetector(hardwareMap, telemetry, "intakeDetector", indicator1);
+        ArtifactDetector launchDetector = new ArtifactDetector(hardwareMap, telemetry, "launchDetector", indicator2);
+        ArtifactDetector storageDetector = new ArtifactDetector(hardwareMap, telemetry, "storageDetector", indicator3);
+        Hopper hopper = new Hopper(hardwareMap, gamepad2, telemetry,this, indicator1, intakeDetector);
+        Launch launch = new Launch(hardwareMap, gamepad2, telemetry, hopper,launchDetector ,autoSteerCamera);
+        Intake intake = new Intake(hardwareMap, gamepad2, hopper, intakeDetector, indicator1, telemetry);
+        Push push = new Push(hardwareMap, gamepad2, hopper, launch, this);
 
 
 

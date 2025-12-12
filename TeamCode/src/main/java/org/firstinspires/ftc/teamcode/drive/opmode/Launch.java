@@ -19,54 +19,72 @@ import org.firstinspires.ftc.teamcode.AutoSteerCamera;
 
 @Config
 public class Launch {
-    public static double LAUNCH_VELOCITY = 1900; //-2300
-    double calculatedLaunchVelocity = LAUNCH_VELOCITY;
-    static double defaultDistance = 1.0;
-    double velocityPerMeter = 300;
-    double targetVelocity;
+   public static int LAUNCH_VELOCITY = -1300;
+   public static double PUSHER_OFFSET = -0.03;
     DcMotorEx launchMotor;
     Gamepad gamepad;
     Telemetry telemetry;
-    AutoSteerCamera autoSteerCamera;
-    public Launch(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry, AutoSteerCamera autoSteerCamera) {
-        this.autoSteerCamera = autoSteerCamera;
+    boolean pressed = false;
+    Hopper hopper;
+    double targetVelocity;
+    private final ArtifactDetector launchDetector;
+
+    private AutoSteerCamera autoSteerCamera;
+
+    public Launch(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry, Hopper hopper, ArtifactDetector launchDetector, AutoSteerCamera autoSteerCamera) {
         launchMotor = hardwareMap.get(DcMotorEx.class, "launch");
         this.gamepad = gamepad;
+        this.launchDetector = launchDetector;
         launchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //launchMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        launchMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.hopper = hopper;
+        this.autoSteerCamera = autoSteerCamera;
 
         this.telemetry = telemetry;
 
-
+        // TEST: Always have the motor on
+        //launchMotor.setVelocity(LAUNCH_VELOCITY);
     }
-    private void calculateLaunchVelocity(){
-        if (autoSteerCamera == null) return;
-        double distance = autoSteerCamera.distancetogoal();
-        if (distance > 0){
-            calculatedLaunchVelocity = LAUNCH_VELOCITY + (distance - defaultDistance) * velocityPerMeter;
-
-        } else {
-            calculatedLaunchVelocity = LAUNCH_VELOCITY;
-
-        }
-
-    }
-
-
 
     void processGamepad() {
+        //Testing always on motor in initialization so this code does nothing right now
         if (gamepad.square) {
             launchMotor.setVelocity(-LAUNCH_VELOCITY);
+
         }else if (gamepad.triangle) {
             launchMotor.setVelocity(LAUNCH_VELOCITY);
+            hopper.setPusherOffset(PUSHER_OFFSET);
+
         } else {
             launchMotor.setVelocity(0);
+            hopper.setPusherOffset(0);
         }
-    //    telemetry.addData("LAUNCH_VELOCITY:", launchMotor.getVelocity());
+
+        if (gamepad.dpad_left) {
+            if (!pressed) {
+                LAUNCH_VELOCITY -= 20;
+                pressed = true;
+            }
+        } else if (gamepad.dpad_right) {
+            if (!pressed) {
+                LAUNCH_VELOCITY += 20;
+                pressed = true;
+            }
+        } else {
+            pressed = false;
+        }
+        if (!launchDetector.isArtifactDetected() && gamepad.triangle) {
+            nextPostion();
+        }
+        telemetry.addData("LAUNCH_VELOCITY:", launchMotor.getVelocity());
+
     }
 
+    private void nextPostion() {
+    }//if error occurs check nextPosition
+
     boolean isFast() {
-        return (launchMotor.getVelocity()/targetVelocity)>.8;
+        return (launchMotor.getVelocity()/LAUNCH_VELOCITY)>.8;
     }
 
     public class LaunchAction implements Action {
@@ -82,7 +100,7 @@ public class Launch {
                 initialized = true;
             }
             double vel = launchMotor.getVelocity();
-      //      packet.put("launchVelocity",vel);
+            packet.put("launchVelocity",vel);
             //return true when still slow
             return !isFast();
         }
@@ -90,9 +108,10 @@ public class Launch {
     public Action launchAction() {
         return new LaunchAction(LAUNCH_VELOCITY);
     }
-    
+
     public Action stopAction() {
         return new LaunchAction(0);
     }
+
 
 }

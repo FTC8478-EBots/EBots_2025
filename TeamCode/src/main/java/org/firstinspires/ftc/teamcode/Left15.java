@@ -14,9 +14,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.drive.opmode.ArtifactDetector;
 import org.firstinspires.ftc.teamcode.drive.opmode.Hopper;
 import org.firstinspires.ftc.teamcode.drive.opmode.Intake;
 import org.firstinspires.ftc.teamcode.drive.opmode.Launch;
+import org.firstinspires.ftc.teamcode.drive.opmode.LightIndicator;
 import org.firstinspires.ftc.teamcode.drive.opmode.Push;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -118,10 +120,17 @@ public class Left15 extends LinearOpMode {
     }
     @Override
     public void runOpMode() {
-        Launch launch = new Launch(hardwareMap, null,telemetry, null);
-        Hopper hopper = new Hopper(hardwareMap,null,telemetry);
-        Push push = new Push(hardwareMap,null,hopper,launch);
-        Intake intake = new Intake(hardwareMap,null,telemetry);
+        AutoSteerCamera autoSteerCamera = new AutoSteerCamera(hardwareMap, telemetry);
+        LightIndicator indicator1 = new LightIndicator(hardwareMap, telemetry, "lightIndicator1");
+        LightIndicator indicator2 = new LightIndicator(hardwareMap, telemetry, "lightIndicator2");
+        LightIndicator indicator3 = new LightIndicator(hardwareMap, telemetry, "lightIndicator3");
+        ArtifactDetector intakeDetector = new ArtifactDetector(hardwareMap, telemetry, "intakeDetector", indicator1);
+        ArtifactDetector launchDetector = new ArtifactDetector(hardwareMap, telemetry, "launchDetector", indicator2);
+        ArtifactDetector storageDetector = new ArtifactDetector(hardwareMap, telemetry, "storageDetector", indicator3);
+        Hopper hopper = new Hopper(hardwareMap, gamepad2, telemetry,this, indicator1, intakeDetector);
+        Launch launch = new Launch(hardwareMap, gamepad2, telemetry, hopper,launchDetector ,autoSteerCamera);
+        Intake intake = new Intake(hardwareMap, gamepad2, hopper, intakeDetector, indicator1, telemetry);
+        Push push = new Push(hardwareMap, gamepad2, hopper, launch, this);
 
 //        boolean far = determineAreWeFar();
 //        boolean red = determineAreWeRed();
@@ -165,19 +174,6 @@ public class Left15 extends LinearOpMode {
         telemetry.addData("Starting Position", startPosition);
         telemetry.update();
         //
-        AprilTagProcessor myAprilTagProcessor;
-        myAprilTagProcessor =  new AprilTagProcessor.Builder().build();
-        VisionPortal myVisionPortal;
-        myVisionPortal = new VisionPortal.Builder()
-                .setCamera(hardwareMap.get(WebcamName.class,"Camera"))
-                .addProcessor(myAprilTagProcessor).build();
-        //myVisionPortal.addProcessor(myAprilTagProcessor);
-        List<AprilTagDetection> myAprilTagDetections;
-        AprilTagDetection myAprilTagDetection;
-        int myAprilTagIdCode;
-        // Get a list of AprilTag detections.
-        myAprilTagDetections = myAprilTagProcessor.getDetections();
-
 // Cycle through through the list and process each AprilTag.
         /*for (AprilTagDetection a : myAprilTagDetections) {
             myAprilTagDetection = a;
@@ -202,17 +198,9 @@ public class Left15 extends LinearOpMode {
         );
         //Scan the April Tag.
         int good=-1;
-        for (AprilTagDetection a : myAprilTagDetections) {
-            myAprilTagDetection = a;
-            if (myAprilTagDetection.metadata != null) {
-                myAprilTagIdCode = myAprilTagDetection.id;
-                telemetry.addData("ID", myAprilTagIdCode);
-                if(21 <= myAprilTagIdCode&& 23>=  myAprilTagIdCode){
-                    good =  myAprilTagIdCode;
-                }
-            }
+
             telemetry.update();
-        }
+
         if(good == 22){
             // Sorter rotate (1)
         }

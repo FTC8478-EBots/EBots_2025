@@ -23,38 +23,37 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 public class Testteleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        AutoSteerCamera autoSteerCamera = new AutoSteerCamera(hardwareMap,telemetry);
-        MecanumDrive drive = new MecanumDrive(hardwareMap, null);
-        Intake intake = new Intake(hardwareMap, gamepad2,telemetry);
-        Launch launch = new Launch(hardwareMap, gamepad2, telemetry, autoSteerCamera);
-        ArtifactDetector artifactDetector = new ArtifactDetector(hardwareMap, gamepad2, telemetry);
-        Hopper hopper = new Hopper(hardwareMap, gamepad2, telemetry);
-        Push push = new Push(hardwareMap, gamepad2, hopper, launch);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, Robot.getCurrent());
+        AutoSteerCamera autoSteerCamera = new AutoSteerCamera(hardwareMap, telemetry);
+        LightIndicator indicator1 = new LightIndicator(hardwareMap, telemetry, "lightIndicator1");
+        LightIndicator indicator2 = new LightIndicator(hardwareMap, telemetry, "lightIndicator2");
+        LightIndicator indicator3 = new LightIndicator(hardwareMap, telemetry, "lightIndicator3");
+        ArtifactDetector intakeDetector = new ArtifactDetector(hardwareMap, telemetry, "intakeDetector", indicator1);
+        ArtifactDetector launchDetector = new ArtifactDetector(hardwareMap, telemetry, "launchDetector", indicator2);
+        ArtifactDetector storageDetector = new ArtifactDetector(hardwareMap, telemetry, "storageDetector", indicator3);
+        Hopper hopper = new Hopper(hardwareMap, gamepad2, telemetry,this, indicator1, intakeDetector);
+        Launch launch = new Launch(hardwareMap, gamepad2, telemetry, hopper,launchDetector ,autoSteerCamera);
+        Intake intake = new Intake(hardwareMap, gamepad2, hopper, intakeDetector, indicator1, telemetry);
+        Push push = new Push(hardwareMap, gamepad2, hopper, launch, this);
+
         waitForStart();
 
         while (!isStopRequested()) {
-            if (gamepad1.dpad_up) {
-                drive.setDrivePowers(
-                        new PoseVelocity2d(new Vector2d(
-                                -0,0),
-                                -autoSteerCamera.headingtogoal()/16.0
-                        ));
-            }
-            else{
-                drive.setDrivePowers(
-                        new PoseVelocity2d(new Vector2d(
-                                -gamepad1.left_stick_y,
-                                -gamepad1.left_stick_x),
-                                -gamepad1.right_stick_x
-                        ));
-            }
+            drive.setDrivePowers(
+                    new PoseVelocity2d(new Vector2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x),
+                            -gamepad1.right_stick_x
+                    ));
             intake.processGamepad();
             launch.processGamepad();
-            //artifactDetector.recognizeColor();
+            intakeDetector.updateIndicator();
+            launchDetector.updateIndicator();
+            storageDetector.updateIndicator();
             hopper.processGamepad();
             push.processGamepad();
             //drive.update();
-            autoSteerCamera.updateResults();
+
             //Pose2d poseEstimate = drive.localizer.getPose();
             //telemetry.addData("x", poseEstimate.position.x);
             //telemetry.addData("y", poseEstimate.position.y);

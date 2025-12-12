@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.opmode.Hopper;
 import org.firstinspires.ftc.teamcode.drive.opmode.Launch;
+import org.firstinspires.ftc.teamcode.drive.opmode.LightIndicator;
 import org.firstinspires.ftc.teamcode.drive.opmode.Push;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -125,9 +126,12 @@ public class AutonomousTest extends LinearOpMode {
         // instantiate your MecanumDrive at a particular pose.
         Pose2d initialPose = null;
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
-        Launch launch = new Launch(hardwareMap, null,telemetry, null);
-        Hopper hopper = new Hopper(hardwareMap,null,telemetry);
-        Push push = new Push(hardwareMap,null,hopper,launch);
+        LightIndicator lightIndicator = new LightIndicator(hardwareMap, telemetry, "lightIndicator");
+
+        Hopper hopper = new Hopper(hardwareMap,null,telemetry, this,lightIndicator,null);
+
+        Launch launch = new Launch(hardwareMap, null,telemetry, hopper, null,null);
+        Push push = new Push(hardwareMap,null,hopper,launch, this);
 
 
 
