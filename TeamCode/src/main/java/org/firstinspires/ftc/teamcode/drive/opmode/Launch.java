@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.AutoSteerCamera;
 @Config
 public class Launch {
    public static int LAUNCH_VELOCITY = -1300;
-   public static double PUSHER_OFFSET = -0.03;
+   public static double PUSHER_OFFSET = -0.04;
     DcMotorEx launchMotor;
     Gamepad gamepad;
     Telemetry telemetry;

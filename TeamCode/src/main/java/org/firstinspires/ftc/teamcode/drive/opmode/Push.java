@@ -23,8 +23,8 @@ public class Push {
 
     boolean pushed = false;
 
-    public static double park = .2;
-    public static double push = .2;
+    public static double park = .5;
+    public static double push = .64;
     //25901 PUSH OFFSET -0.01
     //8478  pUSH OFFSET
     //public static double PUSH_OFFSET = -.01;
@@ -63,7 +63,7 @@ public class Push {
     }
 
     public SequentialAction getLaunchSequence() {
-        return new SequentialAction(new PushAction(push), new SleepAction(.5),new PushAction(park));
+        return new SequentialAction(new PushAction(push), new SleepAction(1)/*,new PushAction(park)*/);
     }
 
     public class PushAction implements Action {

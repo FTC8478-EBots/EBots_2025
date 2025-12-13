@@ -19,15 +19,17 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class ArtifactDetector {
-    double DISTANCE_TO_TARGET = 4.0;
+    double DISTANCE_TO_TARGET = 3.4;
     private RevColorSensorV3 test_color;
 Telemetry telemetry ;
 LightIndicator lightIndicator;
+String deviceName;
 
 
 
 
     public ArtifactDetector(HardwareMap hardwareMap, Telemetry telemetry, String deviceName, LightIndicator lightIndicator) {
+        this.deviceName = deviceName;
         test_color = hardwareMap.get(RevColorSensorV3.class, deviceName);
         this.telemetry = telemetry;
         this.lightIndicator = lightIndicator;
@@ -35,7 +37,7 @@ LightIndicator lightIndicator;
 
     boolean isArtifactDetected() {
         double distance = test_color.getDistance(DistanceUnit.CM);
-     //   telemetry.addData("ArtifactDistance", distance);
+        telemetry.addData("ArtifactDistance" + deviceName, distance);
         return distance< DISTANCE_TO_TARGET;
     }
 public void updateIndicator(){

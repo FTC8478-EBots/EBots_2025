@@ -20,8 +20,10 @@ public class Hopper {
     private final ArtifactDetector intakeDetector;
     double earliestActivation = -1;
     double initialHopperPosition = 1;
-    double pusherOffset = 0;
-    int pos = MAX_POS;
+    public static double pusherOffset = 0;
+    public static double calibrationOffset = 0;
+
+    int pos = MAX_POS-3;
     int numberArtifacts = 0;
     Servo hopperServo;
     Gamepad gamepad;
@@ -31,7 +33,7 @@ public class Hopper {
     boolean buttonWasPressed = false;
     boolean artifactIsDetected = false;
 
-    double[] positionLookup = {
+    /*double[] positionLookup = {
             0,
             0.07,
             .14,
@@ -47,6 +49,24 @@ public class Hopper {
             0.89,
             .96,
     };
+    */
+    double[] positionLookup = {
+            0.017,
+            0.08,
+            0.158,
+            0.225,
+            0.298,
+            0.378,
+            0.458,
+            0.542,
+            0.61,
+            0.69,
+            0.766,
+            0.84,
+            0.91,
+            0.975
+    };
+
 
     public Hopper(HardwareMap hardwareMap, Gamepad gamepad, Telemetry telemetry, OpMode opMode, LightIndicator lightIndicator, ArtifactDetector intakeDetector) {
         this.gamepad = gamepad;
@@ -89,7 +109,7 @@ public class Hopper {
 
             }
         } else if (gamepad.dpad_down){
-                pos = 13;
+                pos = MAX_POS - 3;
 
         } else {
             buttonWasPressed = false;
@@ -141,7 +161,7 @@ public class Hopper {
     void updatePosition() {
         if (pos<0) pos = 0;
         //hopperServo.setPosition(((double) pos) /15.0*10.0/9.0+ HOPPER_OFFSET + pusherOffset);
-        hopperServo.setPosition(positionLookup[pos]+pusherOffset+gamepad.left_trigger*-.01+gamepad.right_trigger*0.01);
+        hopperServo.setPosition(positionLookup[pos]+pusherOffset+calibrationOffset+gamepad.left_trigger*-.01+gamepad.right_trigger*0.01);
 
     }
 

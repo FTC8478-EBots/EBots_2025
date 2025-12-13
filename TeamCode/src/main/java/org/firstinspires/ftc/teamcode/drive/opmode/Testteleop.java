@@ -28,10 +28,12 @@ public class Testteleop extends LinearOpMode {
         LightIndicator indicator1 = new LightIndicator(hardwareMap, telemetry, "lightIndicator1");
         LightIndicator indicator2 = new LightIndicator(hardwareMap, telemetry, "lightIndicator2");
         LightIndicator indicator3 = new LightIndicator(hardwareMap, telemetry, "lightIndicator3");
+        LightIndicator indicator4 = new LightIndicator(hardwareMap, telemetry, "lightIndicator4");
+
         ArtifactDetector intakeDetector = new ArtifactDetector(hardwareMap, telemetry, "intakeDetector", indicator1);
         ArtifactDetector launchDetector = new ArtifactDetector(hardwareMap, telemetry, "launchDetector", indicator2);
         ArtifactDetector storageDetector = new ArtifactDetector(hardwareMap, telemetry, "storageDetector", indicator3);
-        Hopper hopper = new Hopper(hardwareMap, gamepad2, telemetry,this, indicator1, intakeDetector);
+        Hopper hopper = new Hopper(hardwareMap, gamepad2, telemetry,this, indicator4, intakeDetector);
         Launch launch = new Launch(hardwareMap, gamepad2, telemetry, hopper,launchDetector ,autoSteerCamera);
         Intake intake = new Intake(hardwareMap, gamepad2, hopper, intakeDetector, indicator1, telemetry);
         Push push = new Push(hardwareMap, gamepad2, hopper, launch, this);

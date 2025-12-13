@@ -20,7 +20,7 @@ public class Intake {
     LightIndicator indicator;
 
     Servo intakeServo;
-    Intake(HardwareMap hardwareMap, Gamepad gamepad, Hopper hopper, ArtifactDetector artifactDetector, LightIndicator indicator, Telemetry telemetry) {
+    public Intake(HardwareMap hardwareMap, Gamepad gamepad, Hopper hopper, ArtifactDetector artifactDetector, LightIndicator indicator, Telemetry telemetry) {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         intakeServo = hardwareMap.get(Servo.class, "intakeServo");
         this.gamepad = gamepad;
